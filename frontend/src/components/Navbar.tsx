@@ -14,7 +14,6 @@ interface Links {
 interface Dropdown {
   name: string;
   url: string;
-  className: string;
 }
 
 const Navbar: React.FC<Navbarprops> = ({ links, logoUrl }) => {

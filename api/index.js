@@ -17,3 +17,12 @@ app.listen(5000, () => {
 }) 
 app.use('/api/user', UserRouter);
 app.use('/api/auth' , AuthRouter);
+app.use((err,req,res,next)=>{
+    const statucode = err.statucode || 500
+    const message = err.message || "no"
+    res.status(statucode).json({
+        success:false,
+        statucode,
+        message,
+    })
+})

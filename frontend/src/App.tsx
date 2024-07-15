@@ -5,20 +5,22 @@ import Store from "./pages/المتجر";
 import Articale from "./pages/المدونة";
 import Articales from "./pages/المدونات";
 import Dashboard from "./pages/dashboard";
+import SignUp from "./pages/تسجيل دخول";
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter>
+          <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/من نحن" element={<Desc />} />
         <Route path="/المتجر" element={<Store />} />
         <Route path="/المدونة" element={<Articale />} />
         <Route path="/العناصر" element={<Articales />} />
-        <Route path="/تسجيل الدخول" element={<Desc />} />
+        <Route path="/تسجيل الدخول" element={<SignUp />} />
         <Route path="/Dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
+
   );
 };
 
