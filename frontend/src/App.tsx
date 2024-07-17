@@ -5,7 +5,8 @@ import Store from "./pages/المتجر";
 import Articale from "./pages/المدونة";
 import Articales from "./pages/المدونات";
 import Dashboard from "./pages/dashboard";
-import SignUp from "./pages/تسجيل دخول";
+import SignUp from "./pages/تسجيل الدخول";
+import Signin from "./pages/Signin";
 
 const App: React.FC = () => {
   return (
@@ -18,6 +19,8 @@ const App: React.FC = () => {
         <Route path="/العناصر" element={<Articales />} />
         <Route path="/تسجيل الدخول" element={<SignUp />} />
         <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/Signin" element={<Signin/>} />
+
       </Routes>
     </BrowserRouter>
 
