@@ -1,7 +1,7 @@
 import bcryptjs from 'bcryptjs'
 import User from '../modules/user.js'
 import { errorhandler } from '../utils/error.js';
-
+import jwt from 'jsonwebtoken'
   
 export const signup = async (req, res,next) => {
     const { password, email, username } = req.body;
@@ -23,20 +23,29 @@ next(error)    }
 
 
 }
- export const signin = (req , res , next) => {
-    const {username,password} = req.body;
-    if (!username || !password || username === "" || password === ""){
+ export const signin = async (req , res , next) => {
+    const {email,password} = req.body;
+    if (!email || !password || email === "" || password === ""){
         next(errorhandler(400,'all fields are required'))
     }
+    
     try{
 const vaildUser = await User.findOne({email})
 if(!vaildUser){
-    next(errorhandler(400,"username or password is wrong"))
+   return next(errorhandler(400,"username or password is wrong"));
 }
 const vaildPassword = bcryptjs.compareSync(password,vaildUser.password);
 if(!vaildPassword){
-    next(errorhandler(400,"username or password is wrong"));
+    return next(errorhandler(400,"username or password is wrong"));
 }
+const {password: pass,...rest} = vaildUser._doc;
+const token = jwt.sign(
+    {id:vaildUser._id}, process.env.JWT_SECRET, {expiresIn:'1d'}
+)
+res.status(200).cookie("access_token", token,{
+    httpOnly:true
+}).json(rest)
+
     }catch (error){
 next(error)
     }
