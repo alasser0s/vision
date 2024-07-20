@@ -1,10 +1,9 @@
 import '../App.css'
 import caffe from '../assets/Desktop - 2.png'; // Corrected the import for the image
 import cafe from '../assets/Untitled.png'
-import frame87 from "../assets/Frame87.png"
+import frame87 from "../assets/visionlogo.png"
 import Slideshow from './Slideshow';
 import Main from './Main';
-import Cards from './Cards';
 import CardSlider from './CardSlider';
 const slides = [
   {image:frame87, content:'هووك المدونة', alt:'', paragraph:'وصف المدونة' , url:''},

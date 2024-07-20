@@ -19,7 +19,7 @@ const App: React.FC = () => {
         <Route path="/العناصر" element={<Articales />} />
         <Route path="/تسجيل الدخول" element={<SignUp />} />
         <Route path="/Dashboard" element={<Dashboard />} />
-        <Route path="/Signin" element={<Signin/>} />
+        <Route path="/signin" element={<Signin/>} />
 
       </Routes>
     </BrowserRouter>

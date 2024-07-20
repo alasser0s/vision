@@ -1,7 +1,7 @@
 import Hero from '../components/Hero'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
-import frame87 from '../assets/Frame87.png'
+import frame87 from '../assets/visionlogo.png'
 import '../App.css'
 const Home = () => {
     const links = [

@@ -1,7 +1,7 @@
-import frame87 from '../assets/Frame87.png';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
+import frame87 from '../assets/visionlogo.png';
 import Navbar from '../components/Navbar';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -9,13 +9,26 @@ import { useNavigate } from 'react-router-dom';
 import '../App.css';
 import { Loader2 } from 'lucide-react';
 
-const SignUp = () => {
-  const [formData, setFormData] = useState({});
-  const [messageError, setMessageError] = useState(null);
-  const [loading, setLoading] = useState(false);
+interface Link {
+  name: string;
+  url: string;
+  className: string;
+  dropdown?: Link[];
+}
+
+interface FormData {
+  username?: string;
+  email?: string;
+  password?: string;
+}
+
+const SignUp: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({});
+  const [messageError, setMessageError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const links = [
+  const links: Link[] = [
     {
       name: 'الرئيسية',
       url: '/',
@@ -50,11 +63,11 @@ const SignUp = () => {
     },
   ];
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!formData.username || !formData.email || !formData.password) {
       return setMessageError("All fields are required");
@@ -74,7 +87,7 @@ const SignUp = () => {
         navigate('/signin'); // Use the navigate function properly
       }
     } catch (error) {
-      setMessageError(error.message);
+      setMessageError((error as Error).message);
     } finally {
       setLoading(false); // Ensure loading state is reset
     }
@@ -121,7 +134,7 @@ const SignUp = () => {
           </form>
           <div className='flex'>
             <span className='text-white'>have an account?</span>
-            <a href="/sign-in" className='text-purple-300'>sign in</a>
+            <a href="/Signin" className='text-purple-300'>sign in</a>
           </div>
           {messageError && (
             <div className="">
