@@ -1,7 +1,7 @@
 import frame87 from '../assets/visionlogo.png';
 import Navbar from '../components/Navbar';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useState } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -10,10 +10,16 @@ import '../App.css';
 import { Loader2 } from 'lucide-react';
 import { signInstart, signInSuccess, signInErorr } from '@/redux/user/userslice';
 import { useDispatch, useSelector } from 'react-redux';
+import OAuth from '@/components/OAuth';
+
+interface FormData {
+  email?: string;
+  password?: string;
+}
 
 const Signin = () => {
-  const [formData, setFormData] = useState({});
-  const { loading, error: messageError } = useSelector(state => state.user);
+  const [formData, setFormData] = useState<FormData>({});
+  const { loading, error: messageError } = useSelector((state: any) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -52,31 +58,40 @@ const Signin = () => {
     },
   ];
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("Form submitted");
+
     if (!formData.email || !formData.password) {
+      console.log("All fields are required");
       dispatch(signInErorr("All fields are required"));
       return;
     }
+
     try {
+      console.log("Dispatching signInstart");
       dispatch(signInstart());
+
       const res = await fetch('http://localhost:5000/api/auth/signin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
+
       const data = await res.json();
-      if (!res.ok) {
-        dispatch(signInErorr(data.message));
-      } else {
+      console.log("Response received", data);
+
+      if (res.ok) {
+        console.log("worked", data.message);
         dispatch(signInSuccess(data));
-        navigate('/');
-      }
+        navigate('/')
+      } 
     } catch (error) {
+      console.log("Error during sign-in:", error.message);
       dispatch(signInErorr(error.message));
     }
   };
@@ -104,7 +119,7 @@ const Signin = () => {
               <Input type="password" placeholder='************' id='password' className='' onChange={handleChange} />
             </div>
             <div className='gap-5 flex flex-col text-sm mt-5'>
-              <Button variant={'ghost'} type="submit" className='py-3 px-40 rounded-[10px] text-white outline-white' disabled={loading}>
+              <Button variant={'ghost'} type="submit" className='py-3 px-40 rounded-[10px] text-white outline-white'>
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -114,11 +129,12 @@ const Signin = () => {
                   "Sign in"
                 )}
               </Button>
+              <OAuth />
             </div>
           </form>
           <div className='flex'>
             <span className='text-white'>Don't have an account?</span>
-            <a href="/Signin" className='text-purple-300'>Sign up</a>
+            <a href="/تسجيل الدخول" className='text-purple-300'>Sign up</a>
           </div>
           {messageError && (
             <div className="">

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
 import { Loader2 } from 'lucide-react';
+import OAuth from '@/components/OAuth';
 
 interface Link {
   name: string;
@@ -131,6 +132,7 @@ const SignUp: React.FC = () => {
                 )}
               </Button>
             </div>
+            <OAuth/>
           </form>
           <div className='flex'>
             <span className='text-white'>have an account?</span>
