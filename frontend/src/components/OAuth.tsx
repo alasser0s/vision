@@ -5,6 +5,7 @@ import { app } from '../firebase'
 import { useDispatch } from 'react-redux'
 import { signInSuccess } from '@/redux/user/userslice'
 import { useNavigate } from 'react-router-dom'
+import { Mail } from "lucide-react"
 const OAuth = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -41,7 +42,8 @@ navigate('/')
 
   return (
     <div>
-      <Button type='button' variant="outline" onClick={handleCLickGoogle}>auth</Button>
+      <Button type='button' variant="outline" onClick={handleCLickGoogle} className="w-96">      <Mail className="mr-2 h-4 w-4" /> Login with Email
+      </Button>
     </div>
   )
 }

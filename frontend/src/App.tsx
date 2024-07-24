@@ -7,9 +7,11 @@ import Articales from "./pages/المدونات";
 import Dashboard from "./pages/dashboard";
 import SignUp from "./pages/تسجيل الدخول";
 import Signin from "./pages/Signin";
+import Privateroutes from "./components/Privateroutes";
 
 const App: React.FC = () => {
   return (
+    
           <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -18,7 +20,10 @@ const App: React.FC = () => {
         <Route path="/المدونة" element={<Articale />} />
         <Route path="/العناصر" element={<Articales />} />
         <Route path="/تسجيل الدخول" element={<SignUp />} />
+        <Route element={<Privateroutes/>}>
         <Route path="/Dashboard" element={<Dashboard />} />
+
+        </Route>
         <Route path="/signin" element={<Signin/>} />
 
       </Routes>
