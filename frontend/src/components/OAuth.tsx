@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux'
 import { signInSuccess } from '@/redux/user/userslice'
 import { useNavigate } from 'react-router-dom'
 import { Mail } from "lucide-react"
-const OAuth = () => {
+const OAuth : React.FC = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const auth = getAuth(app)

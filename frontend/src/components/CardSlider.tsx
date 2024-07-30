@@ -60,4 +60,5 @@ const CardSlider: React.FC<CardSliderProps> = ({ cards }) => {
   );
 };
 
+
 export default CardSlider;

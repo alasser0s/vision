@@ -42,14 +42,9 @@ const Home = () => {
       ];
   return (
     <div>
-          <div className='bg-[#161616]'>
-      <Navbar links={links} logoUrl={frame87} />
+ 
       <Hero />
-      <div className='bg-[#4A53D1]'>
-              <Footer/>
 
-      </div>
-    </div>
     </div>
   )
 }

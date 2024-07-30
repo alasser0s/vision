@@ -8,27 +8,26 @@ import Dashboard from "./pages/dashboard";
 import SignUp from "./pages/تسجيل الدخول";
 import Signin from "./pages/Signin";
 import Privateroutes from "./components/Privateroutes";
+import Layouts from "./components/Layouts";
 
 const App: React.FC = () => {
   return (
-    
-          <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/من نحن" element={<Desc />} />
-        <Route path="/المتجر" element={<Store />} />
-        <Route path="/المدونة" element={<Articale />} />
-        <Route path="/العناصر" element={<Articales />} />
-        <Route path="/تسجيل الدخول" element={<SignUp />} />
-        <Route element={<Privateroutes/>}>
-        <Route path="/Dashboard" element={<Dashboard />} />
-
-        </Route>
-        <Route path="/signin" element={<Signin/>} />
-
-      </Routes>
+    <BrowserRouter>
+      <Layouts>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/من نحن" element={<Desc />} />
+          <Route path="/المتجر" element={<Store />} />
+          <Route path="/المدونة" element={<Articale />} />
+          <Route path="/العناصر" element={<Articales />} />
+          <Route path="/تسجيل الدخول" element={<SignUp />} />
+          <Route element={<Privateroutes />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
+          <Route path="/signin" element={<Signin />} />
+        </Routes>
+      </Layouts>
     </BrowserRouter>
-
   );
 };
 

@@ -23,40 +23,7 @@ const Signin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const links = [
-    {
-      name: 'الرئيسية',
-      url: '/',
-      className: ''
-    },
-    {
-      name: 'من نحن',
-      url: '/',
-      className: ''
-    },
-    {
-      name: 'السوق',
-      url: '/',
-      className: ''
-    },
-    {
-      name: 'الاجهزه',
-      url: '/',
-      className: '',
-      dropdown: [
-        {
-          name: 'Web Development',
-          url: '/services/web-development',
-          className: ''
-        },
-        {
-          name: 'SEO Optimization',
-          url: '/services/seo-optimization',
-          className: ''
-        },
-      ],
-    },
-  ];
+
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
@@ -98,7 +65,6 @@ const Signin = () => {
 
   return (
     <>
-      <Navbar links={links} logoUrl={frame87} />
       <div className='bg-[#161616] flex items-center justify-center min-h-screen relative'>
         <div className='flex-col flex'>
           <a href="/">

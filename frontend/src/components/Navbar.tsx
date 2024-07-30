@@ -65,7 +65,7 @@ const {currentUser} = useSelector(state=> state.user);
             <DropdownMenuTrigger asChild>
               <Button>
                 <Avatar>
-                  <AvatarImage src={currentUser.photoURL}/>
+                  <AvatarImage src={currentUser.PhotoURL}/>
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
 
