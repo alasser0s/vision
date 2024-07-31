@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import UserRouter from './routes/user.routes.js'
 import AuthRouter from './routes/auth.router.js'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 dotenv.config();
 mongoose.connect(process.env.MONGO).then(
@@ -18,7 +19,7 @@ app.use(cors({
     methods: 'GET,POST,PUT,DELETE',
     credentials: true
   }));
- 
+ app.use(cookieParser())
 app.listen(5000, () => {
     console.log("server is listening");
 }) 
