@@ -1,5 +1,4 @@
 import frame87 from '../assets/visionlogo.png';
-import Navbar from '../components/Navbar';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { Input } from "@/components/ui/input";

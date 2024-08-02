@@ -51,7 +51,7 @@ interface Dropdown {
 }
 
 const Navbar: React.FC<Navbarprops> = ({ links, logoUrl }) => {
-const {currentUser} = useSelector(state=> state.user);
+  const { currentUser } = useSelector((state: any) => state.user);
 
 
   return (
