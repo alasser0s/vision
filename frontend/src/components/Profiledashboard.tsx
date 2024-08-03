@@ -6,7 +6,7 @@ import { Loader2, Terminal } from "lucide-react";
 import { Input } from './ui/input';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from './ui/button';
-import { updateInErorr, updateInSuccess, updateInstart } from '@/redux/user/userslice';
+import { updateFailure, updateSuccess, updateStart } from '@/redux/user/userslice';
 import { Label } from './ui/label';
 const Profiledashboard: React.FC = () => {
   const { currentUser } = useSelector((state: any) => state.user);
@@ -15,37 +15,50 @@ const Profiledashboard: React.FC = () => {
   const fileref = useRef<HTMLInputElement>(null);
   const [imageUpload, setImageUpload] = useState<number | string | null>(null);
   const [imageUploadError, setImageUploadError] = useState<string | null>(null);
-  const [formData, setFormData] = useState<any>({});
+  const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [updateError , setupdateError] = useState<string>()
+  const [updatesuccessed , setupdatesuccessed] = useState<string>()
   const dispatch = useDispatch();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
+console.log(formData);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (Object.keys(formData).length === 0) {
+           setupdateError('nothing has entered');
+
       return;
     }
     try {
-      setLoading(true);
-      dispatch(updateInstart());
+      
+      dispatch(updateStart());
       const res = await fetch(`http://localhost:5000/api/user/update/${currentUser._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
+        credentials: 'include', // Ensure cookies are sent with the request
+
       });
+      
+      
+      console.log(res)
       const data = await res.json();
+      console.log(data);
+      
       if (!res.ok) {
-        dispatch(updateInErorr(data.message));
+        dispatch(updateFailure(data.message));
+        setupdateError(data.message)
       } else {
-        dispatch(updateInSuccess(data));
+        dispatch(updateSuccess(data));
+        setupdatesuccessed("updated user successfully")
       }
-      setLoading(false);
-    } catch (error: any) {
-      setLoading(false);
-      dispatch(updateInErorr(error.message));
+    } catch (error : any) {
+      dispatch(updateFailure(error.message));
+      setupdateError(error.message)
     }
   };
 
@@ -71,7 +84,7 @@ const Profiledashboard: React.FC = () => {
           setImageUpload(progress.toFixed(0));
         },
         (error) => {
-          setImageUploadError('Your file must be less than 2MB');
+          setImageUploadError(error.message);
         },
         async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
@@ -87,7 +100,7 @@ const Profiledashboard: React.FC = () => {
       imgUpload();
     }
   }, [image]);
-
+console.log(onsubmit)
   return (
     <div className='mx-auto w-full p-3 max-w-lg'>
       <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
@@ -120,9 +133,14 @@ const Profiledashboard: React.FC = () => {
           {image && <span>{image.name}</span>}
           {imageUploadError && <span>{imageUploadError}</span>}
           {imageUpload !== null && <span>{`Upload progress: ${imageUpload}%`}</span>}
+         </div>
           <div>
               <Label htmlFor="email" className='text-white'>Email</Label>
-              <Input type="text" placeholder='Email' id='email' className='' onChange={handleChange} />
+              <Input type="text" placeholder={currentUser.email} id='email' className='' onChange={handleChange} />
+            </div>
+            <div>
+              <Label htmlFor="username" className='text-white'>Username</Label>
+              <Input type="text" placeholder={currentUser.username} id='username' className='' onChange={handleChange} />
             </div>
             <div>
               <Label htmlFor="password" className='text-white'>Password</Label>
@@ -136,9 +154,23 @@ const Profiledashboard: React.FC = () => {
                     <span>Loading . . .</span>
                   </>
                 ) : (
-                  "Sign in"
+                  "update"
                 )}
               </Button>
+              {updatesuccessed && (
+          <Alert>
+          <Terminal className="h-4 w-4" />
+          <AlertTitle>Heads up!</AlertTitle>
+          <AlertDescription>
+{updatesuccessed}          </AlertDescription>
+        </Alert>
+              )}
+              {updateError && (
+              <Alert variant="destructive">
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{updateError}</AlertDescription>
+              </Alert>
+              )}
         </div>
       </form>
     </div>

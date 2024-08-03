@@ -1,23 +1,23 @@
 import bcryptjs from 'bcryptjs';
-import User from '../modules/user.js';
-import { errorhandler } from '../utils/error.js';
 import jwt from 'jsonwebtoken';
+import User from '../modules/user.js'; // Ensure the path is correct
+import { errorhandler } from '../utils/error.js';
 
 export const signup = async (req, res, next) => {
     const { password, email, username } = req.body;
     if (!password || !email || !username || username === "" || email === "" || password === "") {
-        return next(errorhandler(400, "all fields are required"));
+        return next(errorhandler(400, "All fields are required"));
     }
-    const passwordhash = bcryptjs.hashSync(password, 10);
+    const passwordHash = bcryptjs.hashSync(password, 10);
 
     const newUser = new User({
         username,
         email,
-        password: passwordhash,
+        password: passwordHash,
     });
     try {
         await newUser.save();
-        res.json('signed up');
+        res.json('Signed up');
     } catch (error) {
         next(error);
     }
@@ -26,29 +26,29 @@ export const signup = async (req, res, next) => {
 export const signin = async (req, res, next) => {
     const { email, password } = req.body;
     if (!email || !password || email === "" || password === "") {
-        return next(errorhandler(400, 'all fields are required'));
+        return next(errorhandler(400, 'All fields are required'));
     }
 
     try {
         const validUser = await User.findOne({ email });
         if (!validUser) {
-            return next(errorhandler(400, "username or password is wrong"));
+            return next(errorhandler(400, "Username or password is wrong"));
         }
         const validPassword = bcryptjs.compareSync(password, validUser.password);
         if (!validPassword) { 
-            return next(errorhandler(400, "username or password is wrong"));
+            return next(errorhandler(400, "Username or password is wrong"));
         } 
         const { password: pass, ...rest } = validUser._doc;
-        const token = jwt.sign(
-            { id: validUser._id }, process.env.JWT_SECRET, { expiresIn: '1d' }
-        );
+        const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
         res.status(200).cookie("access_token", token, {
-            httpOnly: true
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Secure cookie only in production
+            sameSite: 'Strict'
         }).json(rest);
     } catch (error) {
         next(error);
     }
-    
 };
 
 export const google = async (req, res, next) => {
@@ -58,23 +58,27 @@ export const google = async (req, res, next) => {
         if (user) {
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
             const { password, ...rest } = user._doc;
-            res.status(200).cookie('access token', token, {
+            res.status(200).cookie('access_token', token, {
                 httpOnly: true,
+                secure: process.env.NODE_ENV === 'production', // Secure cookie only in production
+                sameSite: 'Strict'
             }).json(rest);
         } else {
-            const generatedpassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
-            const hashedpassword = bcryptjs.hashSync(generatedpassword, 10);
+            const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+            const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
             const newUser = new User({
                 username: name.toLowerCase().split(" ").join("") + Math.random().toString(9).slice(-4),
                 email,
-                password: hashedpassword,
+                password: hashedPassword,
                 profilePicture: PhotoUrl,
             });
             await newUser.save();
             const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
             const { password, ...rest } = newUser._doc;
-            res.status(200).cookie('access token', token, {
+            res.status(200).cookie('access_token', token, {
                 httpOnly: true,
+                secure: process.env.NODE_ENV === 'production', // Secure cookie only in production
+                sameSite: 'Strict'
             }).json(rest);
         }
     } catch (error) {

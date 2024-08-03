@@ -1,4 +1,4 @@
-import User from "../modules/user.js"; // Ensure the path to your User model is correct
+import User from "../modules/user.js"; // Ensure the path is correct
 import { errorhandler } from "../utils/error.js";
 import bcryptjs from 'bcryptjs';
 
@@ -8,16 +8,19 @@ export const test = (req, res) => {
 
 export const updateUser = async (req, res, next) => {
     try {
+        console.log("Incoming request body:", req.body);
+        console.log("Authenticated user ID:", req.user.id);
+
         // Check if the user is authorized to update the profile
         if (req.user.id !== req.params.userId) {
             return next(errorhandler(401, 'Unauthorized'));
         }
-
+ 
         // Validate and hash password if provided
         if (req.body.password) {
             if (req.body.password.length < 6) {
                 return next(errorhandler(403, 'Password must be more than 6 characters'));
-            }  
+            }
             req.body.password = bcryptjs.hashSync(req.body.password, 10);
         }
 
@@ -42,7 +45,7 @@ export const updateUser = async (req, res, next) => {
             $set: {
                 username: req.body.username,
                 email: req.body.email,
-                ProfilePicture: req.body.ProfilePicture,
+                profilePicture: req.body.profilePicture,
                 password: req.body.password,
             },
         }, { new: true });
@@ -56,8 +59,7 @@ export const updateUser = async (req, res, next) => {
         const { password, ...rest } = updatedUser._doc;
         res.status(200).json(rest);
     } catch (err) {
-        // Log the error and pass it to the error handler
-        console.error(err);
+        console.error("Error updating user:", err);
         next(err);
     }
 };
