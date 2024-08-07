@@ -65,7 +65,7 @@ const Navbar: React.FC<Navbarprops> = ({ links, logoUrl }) => {
             <DropdownMenuTrigger asChild>
               <Button>
                 <Avatar>
-                  <AvatarImage src={currentUser.PhotoURL}/>
+                  <AvatarImage src={currentUser.PhotoUrl}/>
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
 

@@ -13,7 +13,7 @@ export const updateUser = async (req, res, next) => {
 
         // Check if the user is authorized to update the profile
         if (req.user.id !== req.params.userId) {
-            return next(errorhandler(401, 'Unauthorized'));
+            return next(errorhandler(403, 'Unauthorized'));
         }
  
         // Validate and hash password if provided
@@ -63,3 +63,20 @@ export const updateUser = async (req, res, next) => {
         next(err);
     }
 };
+export const deleteUser = async (req, res, next) => {
+ 
+  
+    try {
+      await User.findByIdAndDelete(req.params.userId);
+      res.status(200).json('User deleted successfully');
+    } catch (error) {
+      next(error);
+    }
+  }; 
+  export const signout = (req,res,next) => {
+    try {
+        res.clearCookie('access_token').status(200).json('signed out')
+    } catch (error) {
+        next(error)
+    }
+  }

@@ -39,7 +39,7 @@ export const signin = async (req, res, next) => {
             return next(errorhandler(400, "Username or password is wrong"));
         } 
         const { password: pass, ...rest } = validUser._doc;
-        const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        const token = jwt.sign({ id: validUser._id,IsAdmin:validUser.IsAdmin }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
         res.status(200).cookie("access_token", token, {
             httpOnly: true,
@@ -56,7 +56,7 @@ export const google = async (req, res, next) => {
     try {
         const user = await User.findOne({ email });
         if (user) {
-            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+            const token = jwt.sign({ id: user._id, IsAdmin:user.IsAdmin }, process.env.JWT_SECRET);
             const { password, ...rest } = user._doc;
             res.status(200).cookie('access_token', token, {
                 httpOnly: true,
@@ -73,7 +73,7 @@ export const google = async (req, res, next) => {
                 profilePicture: PhotoUrl,
             });
             await newUser.save();
-            const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+            const token = jwt.sign({ id: newUser._id , IsAdmin: newUser.IsAdmin}, process.env.JWT_SECRET);
             const { password, ...rest } = newUser._doc;
             res.status(200).cookie('access_token', token, {
                 httpOnly: true,

@@ -9,6 +9,7 @@ import SignUp from "./pages/تسجيل الدخول";
 import Signin from "./pages/Signin";
 import Privateroutes from "./components/Privateroutes";
 import Layouts from "./components/Layouts";
+import Createpost from "./components/Createpost";
 
 const App: React.FC = () => {
   return (
@@ -23,6 +24,9 @@ const App: React.FC = () => {
           <Route path="/تسجيل الدخول" element={<SignUp />} />
           <Route element={<Privateroutes />}>
             <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
+          <Route element={<Privateroutes />}>
+            <Route path="/create-post" element={<Createpost />} />
           </Route>
           <Route path="/signin" element={<Signin />} />
         </Routes>
