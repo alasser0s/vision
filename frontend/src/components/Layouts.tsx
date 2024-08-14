@@ -45,7 +45,7 @@ const Layouts: React.FC<LayoutsProps> = ({ children }) => {
   return (
     <div className="bg-[#161616] min-h-screen flex flex-col">
       <Navbar links={links} logoUrl={frame78} />
-      <main className="flex-grow">{children}</main>
+      <main className=" flex-grow">{children}</main>
       <Footer /> {/* Ensure Footer is included */}
     </div>
   );
