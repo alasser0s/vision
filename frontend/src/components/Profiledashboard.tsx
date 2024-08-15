@@ -194,7 +194,7 @@ const Profiledashboard: React.FC = () => {
           <Input type="password" placeholder='************' id='password' className='' onChange={handleChange} />
         </div>
         <div className='gap-5 flex flex-col text-sm mt-5'>
-          <Button variant={'ghost'} type="submit" className='py-3 px-40 rounded-[10px] text-white outline-white'>
+          <Button variant={'secondary'} type="submit" className='py-3 px-40 rounded-[10px] text-white outline-white'>
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -212,7 +212,7 @@ const Profiledashboard: React.FC = () => {
             </Link>
           )}
           <AlertDialog>
-            <AlertDialogTrigger>Open</AlertDialogTrigger>
+            <AlertDialogTrigger className='w-full'><Button variant={'destructive'}>delete</Button></AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -237,7 +237,7 @@ const Profiledashboard: React.FC = () => {
             </AlertDialogContent>
           </AlertDialog>
           <AlertDialog>
-            <AlertDialogTrigger>signout</AlertDialogTrigger>
+            <AlertDialogTrigger >signout</AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

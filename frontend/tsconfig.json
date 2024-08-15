@@ -12,7 +12,19 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": ["./src/*","./types/*"]
+    },
+    "jsx": "react",
+    "allowJs": true,
+    "checkJs": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
+    "target": "es6",
+    "lib": ["dom", "esnext"],
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
   }
+  
 }

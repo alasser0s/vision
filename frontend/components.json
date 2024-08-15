@@ -6,7 +6,7 @@
   "tailwind": {
     "config": "d:\\project1\\vision\\frontend\\tailwind.config.js",
     "css": "d:\\project1\\vision\\frontend\\src\\App.css",
-    "baseColor": "stone",
+    "baseColor": "slate",
     "cssVariables": true,
     "prefix": ""
   },
