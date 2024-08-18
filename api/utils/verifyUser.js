@@ -11,7 +11,7 @@ export const verifyToken = (req, res, next) => {
   // Check if token is provided
   if (!token) {
     console.log('No token provided');
-    return next(errorhandler(401, 'Unauthorized'));
+    return next(errorhandler(403, 'Unauthorized'));
   }
 
   // Verify the token

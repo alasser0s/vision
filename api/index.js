@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import dotenv from "dotenv"
 import UserRouter from './routes/user.routes.js'
 import AuthRouter from './routes/auth.router.js'
+import PostRouter from './routes/post.router.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 
@@ -25,6 +26,7 @@ app.listen(5000, () => {
 }) 
 app.use('/api/user', UserRouter);
 app.use('/api/auth' , AuthRouter);
+app.use('/api/post', PostRouter);
 app.use((err,req,res,next)=>{
     const statusCode = err.statusCode || 500;
     const message = err.message || 'Internal Server Error';

@@ -1,8 +1,7 @@
-import * as React from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
- 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -10,13 +9,13 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
- 
+} from "@/components/ui/popover";
+
 const frameworks = [
   {
     value: "ram",
@@ -38,12 +37,25 @@ const frameworks = [
     value: "motherboard",
     label: "Motherboard",
   },
-]
- 
-export function ComboboxDemo() {
-  const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
- 
+];
+
+interface ComboboxDemoProps {
+  onChange?: (value: string) => void;
+}
+
+export function ComboboxDemo({ onChange }: ComboboxDemoProps) {
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("");
+
+  const handleSelect = (currentValue: string) => {
+    const newValue = currentValue === value ? "" : currentValue;
+    setValue(newValue);
+    setOpen(false);
+    if (onChange) {
+      onChange(newValue);
+    }
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -55,13 +67,13 @@ export function ComboboxDemo() {
         >
           {value
             ? frameworks.find((framework) => framework.value === value)?.label
-            : "Select a Device. . ."}
+            : "Select a Device..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search a Device. . ." />
+          <CommandInput placeholder="Search a Device..." />
           <CommandList>
             <CommandEmpty>No framework found.</CommandEmpty>
             <CommandGroup>
@@ -69,10 +81,7 @@ export function ComboboxDemo() {
                 <CommandItem
                   key={framework.value}
                   value={framework.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue)
-                    setOpen(false)
-                  }}
+                  onSelect={handleSelect}
                 >
                   <Check
                     className={cn(
@@ -88,5 +97,5 @@ export function ComboboxDemo() {
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

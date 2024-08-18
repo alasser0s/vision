@@ -13,14 +13,13 @@ import Link from './Elements/Link/Link';
 import Image from './Elements/Embed/Image';
 import Video from './Elements/Embed/Video';
 import Equation from './Elements/Equation/Equation';
-
+import { debounce } from 'lodash';
 // Define the custom editor type
 type CustomEditor = BaseEditor & ReactEditor;
 interface CustomElement extends Descendant {
     type: string;
     children: any[];
 }
-
 
 const Element = (props: any) => {
     const { attributes, children, element } = props;
@@ -115,30 +114,35 @@ const Leaf = ({ attributes, children, leaf }: any) => {
     return <span {...attributes}>{children}</span>;
 };
 
-const SlateEditor: React.FC = () => {
+const SlateEditor: React.FC<{ onChange?: (value: Descendant[]) => void }> = ({ onChange }) => {
     const editor = useMemo(() => withEquation(withHistory(withEmbeds(withTables(withLinks(withReact(createEditor() as CustomEditor)))))), []);
 
-    // Correctly defining the initial value
     const initialValue: Descendant[] = [
         {
             type: 'paragraph',
             children: [{ text: 'First line of text in Slate JS.' }],
-         }as CustomElement,
+        } as CustomElement,
     ];
 
-    // Defining the state for the editor's value
     const [value, setValue] = useState<Descendant[]>(initialValue);
 
     const renderElement = useCallback((props: any) => <Element {...props} />, []);
     const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
 
+    const handleChange = debounce((newValue: Descendant[]) => {
+        setValue(newValue);
+        console.log("Editor Content:", newValue);
+        if (onChange) {
+            onChange(newValue);
+        }
+    }, 300); // Adjust
+
     const handleCodeToText = () => {
-        // Implement the logic for converting code to text
         console.log('Code to Text conversion');
     };
 
     return (
-        <Slate editor={editor as ReactEditor} initialValue={value} onChange={newValue => setValue(newValue)}>
+        <Slate editor={editor as ReactEditor} initialValue={value} onChange={handleChange}>
             <Toolbar handleCodeToText={handleCodeToText} />
             <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
                 <Editable
@@ -149,9 +153,8 @@ const SlateEditor: React.FC = () => {
                     className='w-[1000px]'
                 />
             </div>
-        </Slate >
+        </Slate>
     );
 };
 
 export default SlateEditor;
- 

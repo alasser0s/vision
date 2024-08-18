@@ -61,8 +61,9 @@ const Profiledashboard: React.FC = () => {
   const handlDelete = async () => {
     try {
       setLoading(true);
-      const deleteAcc = await fetch(`/api/user/delete/${currentUser._id}`, {
+      const deleteAcc = await fetch(`http://localhost:5000/api/user/delete/${currentUser._id}`, {
         method: 'DELETE',
+        credentials: 'include',
 
       });
       const result = await deleteAcc.json();
@@ -206,7 +207,7 @@ const Profiledashboard: React.FC = () => {
           </Button>
           {currentUser.IsAdmin&&(
             <Link to={'/create-post'}>
-            <Button>
+            <Button variant={'ghost'}>
             Create Post
             </Button>
             </Link>
