@@ -21,7 +21,7 @@ export const signup = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-};
+}; 
 
 export const signin = async (req, res, next) => {
     const { email, password } = req.body;
@@ -39,17 +39,26 @@ export const signin = async (req, res, next) => {
             return next(errorhandler(400, "Username or password is wrong"));
         } 
         const { password: pass, ...rest } = validUser._doc;
-        const token = jwt.sign({ id: validUser._id,IsAdmin:validUser.IsAdmin }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        const token = jwt.sign({ id: validUser._id, IsAdmin: validUser.IsAdmin }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
-        res.status(200).cookie("access_token", token, {
+        res.cookie("access_token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Secure cookie only in production
-            sameSite: 'Strict'
-        }).json(rest);
+            secure: false,
+            sameSite: process.env.JWT_SECRET === 'production' ? 'Strict' : 'Lax',
+
+        });
+
+        console.log('Token:', token); // Log the generated token
+        console.log('Cookie set:', res.getHeader('Set-Cookie')); // Log the cookie header
+        console.log('Response:', rest); // Log the response
+
+        res.status(200).json(rest);
     } catch (error) {
+        console.error('Signin error:', error); // Log any errors
         next(error);
     }
 };
+
 
 export const google = async (req, res, next) => {
     const { email, name, PhotoUrl } = req.body;

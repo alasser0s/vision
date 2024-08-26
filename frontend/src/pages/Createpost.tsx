@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { ComboboxDemo } from './ui/category';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Button } from './ui/button';
-import SlateEditor from './draftjs/StateEditor/Editor';
+import { ComboboxDemo } from '../components/ui/category';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Button } from '../components/ui/button';
 import 'katex/dist/katex.min.css';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '@/firebase';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import TextEditor from '@/components/Quill';
 
 const Createpost: React.FC = () => {
+    const [value, setValue] = useState('');
     const [file, setfile] = useState<File | null>(null);
     const [imageURL, setImageURL] = useState<string>('');
     const [formData, setFormData] = useState<any>({});
@@ -16,6 +19,7 @@ const Createpost: React.FC = () => {
     const [imageUpload, setImageUpload] = useState<number | string | null>(null);
     const [imageUploadError, setImageUploadError] = useState<string | null>(null);
 
+      
     const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -43,7 +47,7 @@ const Createpost: React.FC = () => {
                 async () => {
                     const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
                     setImageURL(downloadURL);
-                    setFormData({ ...formData, image: downloadURL });
+                    setFormData({ ...formData, images: downloadURL });
                 }
             );
         }
@@ -57,22 +61,24 @@ const Createpost: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const serializedContent = JSON.stringify(formData.content);
-        const postData = {
-            ...formData,
-            content: serializedContent, // Convert content to a JSON string
-        };
+  
         try {
-            const res = await fetch('/api/post/create', {
+            console.log(document.cookie);
+            
+            const res = await fetch('http://localhost:5000/api/post/create', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(postData),
+                credentials:'include',
+                headers: { 'Content-Type': 'application/json',
+            }
+                ,
+                body: JSON.stringify(FormData),
+                
             });
             const data = await res.json();
-            if (!res.ok) {
-                setPublishError(data.message);
-            } else {
-                setPublishError(null);
+            if (res.ok) {                setPublishError(null);
+
+            } else {                setPublishError(data.message);
+
             }
         } catch (error: any) {
             setPublishError(error.message);
@@ -95,14 +101,15 @@ const Createpost: React.FC = () => {
                     <Button variant={'secondary'} type="button" onClick={imgUpload}>Upload Image</Button>
                 </div>
                 <Input type='text' placeholder='price' className='w-20' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, price: e.target.value })} />
-                {formData.image && (
+                {formData.images && (
                     <div>
-                        <img src={formData.image} alt="upload" className='w-full h-72 object-cover' />
+                        <img src={formData.images} alt="upload" className='w-full h-72 object-cover' />
                     </div>
                 )}
                 {imageUpload !== null && <p>Upload Progress: {imageUpload}%</p>}
                 {imageUploadError && <p className="text-red-500">Error: {imageUploadError}</p>}
-                <SlateEditor onChange={(value) => setFormData({ ...formData, content: value })} />
+               <TextEditor/>
+
                 {publishError && <p className="text-red-500">Error: {publishError}</p>}
                 <Button variant={'secondary'} className='w-full'>Publish</Button>
             </form>

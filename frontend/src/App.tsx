@@ -9,7 +9,9 @@ import SignUp from "./pages/تسجيل الدخول";
 import Signin from "./pages/Signin";
 import Privateroutes from "./components/Privateroutes";
 import Layouts from "./components/Layouts";
-import Createpost from "./components/Createpost";
+import Createpost from "./pages/Createpost";
+import UpdatePost from "./pages/UpdatePost";
+import PostPage from "./pages/PostPage";
 
 const App: React.FC = () => {
   return (
@@ -27,8 +29,10 @@ const App: React.FC = () => {
           </Route>
           <Route element={<Privateroutes />}>
             <Route path="/create-post" element={<Createpost />} />
+            <Route path="/update-post/:postId" element={<UpdatePost />} />
           </Route>
           <Route path="/signin" element={<Signin />} />
+          <Route path="/post/:postSlug" element={<PostPage />} />
         </Routes>
       </Layouts>
     </BrowserRouter>

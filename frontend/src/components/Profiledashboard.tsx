@@ -60,26 +60,29 @@ const Profiledashboard: React.FC = () => {
   }
   const handlDelete = async () => {
     try {
-      setLoading(true);
-      const deleteAcc = await fetch(`http://localhost:5000/api/user/delete/${currentUser._id}`, {
-        method: 'DELETE',
-        credentials: 'include',
-
-      });
-      const result = await deleteAcc.json();
-      if (!deleteAcc.ok) {
-        dispatch(deleteError(result.message));
-
-      } else {
-        dispatch(deleteSuccess(result));
-        navigate('/')
-      }
+        setLoading(true);
+        console.log('Attempting to delete user:', currentUser._id);
+        const deleteAcc = await fetch(`http://localhost:5000/api/user/delete/${currentUser._id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+        });
+        const result = await deleteAcc.json();
+        if (!deleteAcc.ok) {
+            console.error('Delete error:', result.message);
+            dispatch(deleteError(result.message));
+        } else {
+            console.log('Delete successful:', result);
+            dispatch(deleteSuccess(result));
+            navigate('/');
+        }
     } catch (error: any) {
-      dispatch(deleteError(error.message));
+        console.error('Caught error during delete:', error.message);
+        dispatch(deleteError(error.message));
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -150,7 +153,7 @@ const Profiledashboard: React.FC = () => {
   }, [image]);
 
   return (
-    <div className='mx-auto w-full p-3 max-w-lg'>
+    <div className='mx-auto p-3 max-w-lg'>
       <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
       <form className='flex flex-col' onSubmit={handleSubmit}>
         <input

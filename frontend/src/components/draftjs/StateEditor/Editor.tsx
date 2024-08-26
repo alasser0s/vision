@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { BaseEditor, createEditor, Descendant } from 'slate';
 import { withHistory } from 'slate-history';
 import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
@@ -14,11 +14,17 @@ import Image from './Elements/Embed/Image';
 import Video from './Elements/Embed/Video';
 import Equation from './Elements/Equation/Equation';
 import { debounce } from 'lodash';
+
 // Define the custom editor type
 type CustomEditor = BaseEditor & ReactEditor;
 interface CustomElement extends Descendant {
     type: string;
     children: any[];
+}
+
+interface SlateEditorProps {
+    value?: Descendant[]; // New prop to accept value from parent
+    onChange?: (value: Descendant[]) => void;
 }
 
 const Element = (props: any) => {
@@ -114,7 +120,7 @@ const Leaf = ({ attributes, children, leaf }: any) => {
     return <span {...attributes}>{children}</span>;
 };
 
-const SlateEditor: React.FC<{ onChange?: (value: Descendant[]) => void }> = ({ onChange }) => {
+const SlateEditor: React.FC<SlateEditorProps> = ({ value: externalValue, onChange }) => {
     const editor = useMemo(() => withEquation(withHistory(withEmbeds(withTables(withLinks(withReact(createEditor() as CustomEditor)))))), []);
 
     const initialValue: Descendant[] = [
@@ -124,7 +130,15 @@ const SlateEditor: React.FC<{ onChange?: (value: Descendant[]) => void }> = ({ o
         } as CustomElement,
     ];
 
-    const [value, setValue] = useState<Descendant[]>(initialValue);
+    const [value, setValue] = useState<Descendant[]>(externalValue || initialValue);
+
+    // Sync external value with internal state
+    useEffect(() => {
+        if (externalValue) {
+            setValue(externalValue);
+        }
+    }, [externalValue]);
+    console.log("Current Editor Value:", value);
 
     const renderElement = useCallback((props: any) => <Element {...props} />, []);
     const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
@@ -135,7 +149,7 @@ const SlateEditor: React.FC<{ onChange?: (value: Descendant[]) => void }> = ({ o
         if (onChange) {
             onChange(newValue);
         }
-    }, 300); // Adjust
+    }, 300); // Adjust debounce time as needed
 
     const handleCodeToText = () => {
         console.log('Code to Text conversion');

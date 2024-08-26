@@ -41,6 +41,8 @@ const frameworks = [
 
 interface ComboboxDemoProps {
   onChange?: (value: string) => void;
+  value?: any; // Add this line to include the value prop
+
 }
 
 export function ComboboxDemo({ onChange }: ComboboxDemoProps) {

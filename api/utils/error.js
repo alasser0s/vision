@@ -3,4 +3,4 @@ export const errorhandler = (statuscode ,  message)=>{
     error.statuscode = statuscode;
     error.message = message;
     return error;
-}
+}     

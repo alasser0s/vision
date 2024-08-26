@@ -9,7 +9,10 @@
   padding: 0;
   box-sizing: border-box; 
 }
-
+.ql-image{
+  width: 712px;
+  height: 500px;
+}
 
 
 @layer base {

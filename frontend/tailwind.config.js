@@ -6,7 +6,7 @@ module.exports = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-    './node_modules/flowbite/**/*.js' // include Flowbite paths
+    'node_modules/flowbite-react/lib/esm/**/*.js'
 
   ],
   prefix: "",
@@ -76,7 +76,7 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate"),
-    require('daisyui'),
+    require('flowbite/plugin')
 
 
   ],

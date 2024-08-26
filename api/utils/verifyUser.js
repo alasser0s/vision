@@ -2,32 +2,20 @@ import jwt from 'jsonwebtoken';
 import { errorhandler } from './error.js';
 
 export const verifyToken = (req, res, next) => {
-  // Extract the token from cookies
-  const token = req.cookies.access_token;
-  
-  // Log the token for debugging purposes
-  console.log('Access token:', token);
+    console.log('Received Cookies:', req.cookies); // Log all cookies for debugging
 
-  // Check if token is provided
-  if (!token) {
-    console.log('No token provided');
-    return next(errorhandler(403, 'Unauthorized'));
-  }
+    const token = req.cookies.access_token;
+    console.log('Access token:', token); // Log the token for debugging
 
-  // Verify the token
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      console.log('Token verification error:', err);
-      return next(errorhandler(401, 'Unauthorized'));
+    if (!token) {
+        return next(errorhandler(403, 'Unauthorized: No token provided'));
     }
-
-    // Log the decoded user for debugging
-    console.log('Token verified, user:', user);
-
-    // Attach user to the request object
-    req.user = user;
-
-    // Proceed to the next middleware or route handler
-    next();
-  });
+ 
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            return next(errorhandler(401, 'Unauthorized: Invalid token'));
+        }
+        req.user = user;
+        next();
+    });
 };

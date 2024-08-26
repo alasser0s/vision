@@ -1,44 +1,47 @@
-import React from 'react'
-import { useLocation } from 'react-router-dom'
-import { useState,useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-const Sidedashboard:React.FC = () => {
-    const location = useLocation()
-    const navigate = useNavigate()
-    const [tab , settab] = useState('')
-    useEffect(()=>{
-      const urlpramats = new URLSearchParams(location.search)
-      const tabFormul = urlpramats.get('tab')
-      console.log(tabFormul);
-      if (settab){
-        settab(tab)
-      }
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+const Sidedashboard: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [tab, settab] = useState('');
+  const { currentUser } = useSelector((state: any) => state.user);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const tabParam = urlParams.get('tab');
+    if (tabParam) {
+      settab(tabParam);
+    } else {
+      settab('profile');
     }
+  }, [location.search]);
 
-  ,
-  [location.search])
-  const handleCLick = (tabname:string) =>{
-    navigate(`?tab=${tabname}`)
-    settab = tabname
-  }
+  const handleClick = (tabname: string) => {
+    navigate(`?tab=${tabname}`);
+  };
+
   return (
-    <div>
-        <div className="flex mt-20 px-5 w-full">
-    <ul className="menu bg-gray-900 opacity-75 text-white min-h-screen w-52 px-10 p-4">
-      {/* Sidebar content here */}
-      <li className={tab === "profile" ? 'text-black' : ''}
-      ><a onClick={()=>handleCLick("profile")}>profile</a></li>
-      <li className={tab === "logout" ? 'bg-black' : ''}><a onClick={()=>handleCLick("logout")}>Sidebar Item 2</a></li>
-            <li className={tab === "profile" ? 'bg-black' : ''}><a onClick={()=>handleCLick("profile")}>Sidebar Item 2</a></li>
-      <li className={tab === "profile" ? 'bg-black' : ''}><a onClick={()=>handleCLick("profile")}>Sidebar Item 2</a></li>
-      <li className={tab === "profile" ? 'bg-black' : ''}><a onClick={()=>handleCLick("profile")}>Sidebar Item 2</a></li>
-      <li className={tab === "profile" ? 'bg-black' : ''}><a onClick={()=>handleCLick("profile")}>Sidebar Item 2</a></li>
-      <li><a>Sidebar Item 2</a></li>
-
-    </ul>
-  </div>
+    <div className="bg-gray-900 opacity-75 text-white h-screen mt-24 w-52 p-4 z-10 ">
+      <ul className="menu">
+        <li className={tab === 'profile' ? 'text-black cursor-pointer' : 'cursor-pointer'}>
+          <a onClick={() => handleClick('profile')}>Profile</a>
+        </li>
+        <li className={tab === 'logout' ? 'bg-black cursor-pointer' : 'cursor-pointer'}>
+          <a onClick={() => handleClick('logout')}>Logout</a>
+        </li>
+        {currentUser && currentUser.IsAdmin && (
+          <li className={tab === 'posts' ? 'bg-black cursor-pointer' : 'cursor-pointer'}>
+            <a onClick={() => handleClick('posts')}>Posts</a>
+          </li>
+        )}
+        <li>
+          <a>Sidebar Item 4</a>
+        </li>
+      </ul>
     </div>
-  )
-}
+  );
+};
 
-export default Sidedashboard
+export default Sidedashboard;

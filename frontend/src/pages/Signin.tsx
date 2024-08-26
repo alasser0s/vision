@@ -56,7 +56,7 @@ const Signin = () => {
         dispatch(signInSuccess(data));
         navigate('/')
       } 
-    } catch (error) {
+    } catch (error : any) {
       console.log("Error during sign-in:", error.message);
       dispatch(signInErorr(error.message));
     }
