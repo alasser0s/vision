@@ -88,7 +88,7 @@ try {
                 images:req.body.images,
                 price:req.body.price,
             }
-        },{new:true}
+        },{new:true} 
     )
     res.status(200).json(updateroute)
 } catch (error) {

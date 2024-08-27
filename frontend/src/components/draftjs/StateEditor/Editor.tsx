@@ -1,9 +1,8 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { BaseEditor, createEditor, Descendant } from 'slate';
+import { BaseEditor, createEditor, Descendant, Node } from 'slate';
 import { withHistory } from 'slate-history';
 import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
 import { Toolbar } from './Toolbar/Toolbar';
-import { sizeMap, fontFamilyMap } from './utils/StateUtilityFunctions';
 import withLinks from './plugins/WithLinks';
 import withTables from './plugins/WithTable';
 import withEmbeds from './plugins/WithEmbeds';
@@ -17,14 +16,28 @@ import { debounce } from 'lodash';
 
 // Define the custom editor type
 type CustomEditor = BaseEditor & ReactEditor;
-interface CustomElement extends Descendant {
+type CustomElement = {
     type: string;
-    children: any[];
-}
+    url?: string;
+    alt?: string;
+    content?: string;
+    children: CustomText[];
+};
+
+type CustomText = {
+    text: string;
+    bold?: boolean;
+    italic?: boolean;
+    underline?: boolean;
+    strikethrough?: boolean;
+    code?: boolean;
+    color?: string;
+    fontSize?: string;
+};
 
 interface SlateEditorProps {
-    value?: Descendant[]; // New prop to accept value from parent
-    onChange?: (value: Descendant[]) => void;
+    value?: CustomElement[]; // New prop to accept value from parent
+    onChange: (content: string) => void;
 }
 
 const Element = (props: any) => {
@@ -138,17 +151,73 @@ const SlateEditor: React.FC<SlateEditorProps> = ({ value: externalValue, onChang
             setValue(externalValue);
         }
     }, [externalValue]);
+
     console.log("Current Editor Value:", value);
 
     const renderElement = useCallback((props: any) => <Element {...props} />, []);
     const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
 
+    const serialize = (nodes: CustomElement[]): string => {
+        return nodes.map(node => {
+            if ('children' in node) {  // Checking if node has children (it is a CustomElement)
+                switch (node.type) {
+                    case 'paragraph':
+                        return `<p>${serialize(node.children as CustomText[])}</p>`;
+                    case 'headingOne':
+                        return `<h1>${serialize(node.children as CustomText[])}</h1>`;
+                    case 'headingTwo':
+                        return `<h2>${serialize(node.children as CustomText[])}</h2>`;
+                    case 'list-item':
+                        return `<li>${serialize(node.children as CustomText[])}</li>`;
+                    case 'orderedList':
+                        return `<ol>${serialize(node.children as CustomText[])}</ol>`;
+                    case 'unorderedList':
+                        return `<ul>${serialize(node.children as CustomText[])}</ul>`;
+                    case 'link':
+                        return `<a href="${node.url}">${serialize(node.children as CustomText[])}</a>`;
+                    case 'image':
+                        return `<img src="${node.url}" alt="${node.alt || ''}" />`;
+                    case 'video':
+                        return `<video controls><source src="${node.url}" type="video/mp4" /></video>`;
+                    case 'equation':
+                        return `<div class="equation">${node.content}</div>`;
+                    default:
+                        return serialize(node.children as CustomText[]);
+                }
+            } else {  // This is a CustomText node
+                let text = node.text;
+                if (node.bold) {
+                    text = `<strong>${text}</strong>`;
+                }
+                if (node.italic) {
+                    text = `<em>${text}</em>`;
+                }
+                if (node.underline) {
+                    text = `<u>${text}</u>`;
+                }
+                if (node.strikethrough) {
+                    text = `<del>${text}</del>`;
+                }
+                if (node.code) {
+                    text = `<code>${text}</code>`;
+                }
+                if (node.color) {
+                    text = `<span style="color: ${node.color}">${text}</span>`;
+                }
+                if (node.fontSize) {
+                    text = `<span style="font-size: ${node.fontSize}">${text}</span>`;
+                }
+                return text;
+            }
+        }).join('');
+    };
+    
+
     const handleChange = debounce((newValue: Descendant[]) => {
         setValue(newValue);
-        console.log("Editor Content:", newValue);
-        if (onChange) {
-            onChange(newValue);
-        }
+        const serializedContent = serialize(newValue); // Serialize the content
+        console.log("Serialized Content:", serializedContent);
+        onChange(serializedContent); // Call onChange with the serialized content
     }, 300); // Adjust debounce time as needed
 
     const handleCodeToText = () => {

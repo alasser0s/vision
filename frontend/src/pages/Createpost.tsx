@@ -8,7 +8,7 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/
 import { app } from '@/firebase';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import TextEditor from '@/components/Quill';
+import TextEditor from '../components/tootip/ToolTip';
 
 const Createpost: React.FC = () => {
     const [value, setValue] = useState('');
@@ -61,7 +61,17 @@ const Createpost: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-  
+        const parsedPrice = parseFloat(formData.price);
+
+        if (isNaN(parsedPrice)) {
+            setPublishError("Price must be a valid number.");
+            return;
+        }
+    
+        const submissionData = {
+            ...formData,
+            price: parsedPrice,  // Ensure price is a number
+        };
         try {
             console.log(document.cookie);
             
@@ -71,7 +81,7 @@ const Createpost: React.FC = () => {
                 headers: { 'Content-Type': 'application/json',
             }
                 ,
-                body: JSON.stringify(FormData),
+                body: JSON.stringify(submissionData),
                 
             });
             const data = await res.json();
@@ -108,7 +118,7 @@ const Createpost: React.FC = () => {
                 )}
                 {imageUpload !== null && <p>Upload Progress: {imageUpload}%</p>}
                 {imageUploadError && <p className="text-red-500">Error: {imageUploadError}</p>}
-               <TextEditor/>
+               <TextEditor onChange={(value) => setFormData({ ...formData, content: value })}/>
 
                 {publishError && <p className="text-red-500">Error: {publishError}</p>}
                 <Button variant={'secondary'} className='w-full'>Publish</Button>

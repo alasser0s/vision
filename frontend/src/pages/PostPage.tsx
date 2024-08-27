@@ -42,10 +42,8 @@ const PostPage = () => {
             <img src={post.images} alt={post.title} className='absloute w-[714px] h-[476px] object-cover ' />
             <h1 className='text-[53.21px] mb-12 relative'>{post && post.title}</h1>
           </div>
-          <div>
-          {
+          <div dangerouslySetInnerHTML={{__html:post&&post.content}}>
           
-          post.content}
           </div>        </div></main>
     </div>
   )

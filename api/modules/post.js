@@ -18,15 +18,15 @@ const postScheme = new mongoose.Schema({
         unique: true,
 
     },
-    content: { type: mongoose.Schema.Types.Mixed, required: true }, // Mixed type can store any data
+    content: { type: String, required: true }, // Mixed type can store any data
 
     category: {
-        type: String,
+        type: mongoose.Schema.Types.Mixed,
         required: false,
         default: 'uncatogarized'
     },
     price: {
-        type: Number && String,
+        type: mongoose.Schema.Types.Mixed,
         required: true,
     }, 
     images: {
