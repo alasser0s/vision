@@ -1,34 +1,49 @@
-
 const Footer = () => {
-  return ( 
-    <div className=' w-full h-[250px] bg-[#4A53D1]
-'>
+  return (
+    <div className='w-full bg-[#4A53D1]'>
+      <div className='container mx-auto px-4'>
+        <div className='grid grid-cols-1 md:grid-cols-3 text-white py-8 gap-8'>
+          {/* Lists Section */}
+          <div className="flex flex-col items-center md:items-start space-y-2">
+            <h1 className="text-xl md:text-2xl mb-4">قوائم</h1>
+            <a href="#" className="hover:text-gray-200 transition-colors">للاعلان</a>
+            <a href="#" className="hover:text-gray-200 transition-colors">ملاحظات</a>
+            <a href="#" className="hover:text-gray-200 transition-colors">تواصل مع الفريق</a>
+          </div>
 
-  
-    <div className=' items-center flex justify-center relative -1/2'>
+          {/* Vision Section */}
+          <div className="flex flex-col items-center text-center order-first md:order-none">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl mb-2">Vision</h1>
+            <p className="text-lg">عنوانك للمعرفة</p>
+          </div>
 
-    <div className=' w-full h-[247px] grid grid-cols-3 text-white divide-x'>
-      <div className="flex flex-col items-center pt-10 pr-80 ">
-        <h1 className="mb-2 text-[20px]">قوائم</h1>
-        <a href="#" className="mb-1">للاعلان</a>
-        <a href="#" className="mb-1">ملاحظات</a>
-        <a href="#">تواصل مع الفريق</a>
-      </div>
-      <div className="flex flex-col items-center p-6">
-        <h1 className=" text-[56px]">Vision</h1>
-        <p className="mb-4">عنوانك للمعرفة</p>
+          {/* Contact Section */}
+          <div className="flex flex-col items-center md:items-end space-y-2">
+            <h1 className="text-xl md:text-2xl mb-4">للتواصل</h1>
+            <a 
+              href="https://instagram.com/sono.rar" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:text-gray-200 transition-colors"
+            >
+              @sono.rar
+            </a>
+          </div>
 
-      </div>
-      <div className="flex flex-col items-center p-10 pl-[350px]">
-        <h1 className="mb-2 text-[20px]">للتواصل</h1>
-        <a href="https://instagram.com/the_sarsor" target="_blank" rel="noopener noreferrer">@the_sarsor</a>
-      </div>
-      <div className="col-span-3 text-center mt-4">
-        <p>Copyright 2024 <a href="#" className="underline">team vision</a>. All Rights Reserved. Use of the site is governed by our <a href="#" className="underline">Terms of Use</a> and <a href="#" className="underline">Privacy Policy</a>.</p>
+          {/* Copyright Section */}
+          <div className="col-span-1 md:col-span-3 text-center mt-8 text-sm border-t border-white/20 pt-6">
+            <p className="px-4">
+              Copyright 2024 {' '}
+              <a href="#" className="underline hover:text-gray-200">team vision</a>
+              . All Rights Reserved. Use of the site is governed by our {' '}
+              <a href="#" className="underline hover:text-gray-200">Terms of Use</a>
+              {' '} and {' '}
+              <a href="#" className="underline hover:text-gray-200">Privacy Policy</a>.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-    </div>
-  </div>
   );
 };
 

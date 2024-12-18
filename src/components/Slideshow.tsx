@@ -20,7 +20,7 @@ const Slideshow: React.FC<SlideProps> = ({ slides }) => {
     };
 
     return (
-        <div className="relative w-full max-w-full mx-auto h-[712px] top-28">
+        <div className="relative w-full max-w-full mx-auto h-[712px]">
             <div className="absolute inset-0 flex justify-center items-center">
                 <div className="w-full h-full">
                     <div className="absolute inset-0 transition-transform duration-500 ease-in transform">

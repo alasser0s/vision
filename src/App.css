@@ -1,5 +1,33 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html, body {
+    @apply m-0 p-0 overflow-x-hidden;
+  }
+
+  body {
+    @apply bg-[#161616] text-white min-h-screen;
+  }
+
+  #root {
+    @apply min-h-screen flex flex-col;
+  }
+}
+
+/* Remove any margin/padding that might cause whitespace */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Ensure proper layout structure */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 /* src/styles/global.css */

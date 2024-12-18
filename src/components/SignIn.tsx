@@ -1,26 +1,21 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { signUp } from '../redux/user/authSlice';
+import { signIn } from '../redux/user/authSlice';
 import { RootState, AppDispatch } from '../redux/store';
 import { useNavigate, Link } from 'react-router-dom';
-import { Button } from '../components/ui/button';
+import { Button } from './ui/button';
 
-const SignUp = () => {
+const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { loading, error } = useSelector((state: RootState) => state.auth);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      // Handle password mismatch
-      return;
-    }
-    const result = await dispatch(signUp({ email, password }));
-    if (signUp.fulfilled.match(result)) {
+    const result = await dispatch(signIn({ email, password }));
+    if (signIn.fulfilled.match(result)) {
       navigate('/');
     }
   };
@@ -30,12 +25,12 @@ const SignUp = () => {
       <div className="max-w-md w-full space-y-8 bg-white/10 backdrop-blur-lg rounded-xl p-8 shadow-2xl">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
-            Create your account
+            Sign in to your account
           </h2>
           <p className="mt-2 text-center text-sm text-gray-300">
             Or{' '}
-            <Link to="/signin" className="font-medium text-indigo-400 hover:text-indigo-300">
-              sign in to existing account
+            <Link to="/signup" className="font-medium text-indigo-400 hover:text-indigo-300">
+              create a new account
             </Link>
           </p>
         </div>
@@ -69,20 +64,6 @@ const SignUp = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <div>
-              <label htmlFor="confirm-password" className="sr-only">
-                Confirm Password
-              </label>
-              <input
-                id="confirm-password"
-                type="password"
-                required
-                className="appearance-none relative block w-full px-3 py-3 border border-gray-600 bg-gray-800/50 placeholder-gray-400 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
           </div>
 
           {error && (
@@ -91,16 +72,10 @@ const SignUp = () => {
             </div>
           )}
 
-          {password !== confirmPassword && (
-            <div className="text-yellow-400 text-sm text-center bg-yellow-900/20 py-2 rounded-lg">
-              Passwords do not match
-            </div>
-          )}
-
           <div>
             <Button
               type="submit"
-              disabled={loading || password !== confirmPassword}
+              disabled={loading}
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
             >
               {loading ? (
@@ -109,12 +84,32 @@ const SignUp = () => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Creating account...
+                  Signing in...
                 </span>
               ) : (
-                'Sign up'
+                'Sign in'
               )}
             </Button>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-600 rounded bg-gray-800"
+              />
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-300">
+                Remember me
+              </label>
+            </div>
+
+            <div className="text-sm">
+              <a href="#" className="font-medium text-indigo-400 hover:text-indigo-300">
+                Forgot your password?
+              </a>
+            </div>
           </div>
         </form>
       </div>
@@ -122,4 +117,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignIn; 

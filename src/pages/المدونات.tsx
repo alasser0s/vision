@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 
 interface Article {
   id: number;
@@ -92,35 +93,36 @@ const Articles = () => {
         {articles
           .filter(article => selectedCategory === 'all' || article.category === selectedCategory)
           .map(article => (
-            <motion.article
-              key={article.id}
-              variants={item}
-              className="rounded-xl border border-white/20 overflow-hidden hover:shadow-lg transition-shadow backdrop-blur-sm bg-white/10"
-            >
-              <img
-                src={article.image}
-                alt={article.title}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <div className="flex items-center gap-4 text-sm text-white/60 mb-4">
-                  <span className="flex items-center gap-1">
-                    <FiCalendar className="inline" />
-                    {article.date}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <FiClock className="inline" />
-                    {article.readTime}
-                  </span>
+            <Link to={`/post/${article.id}`} key={article.id}>
+              <motion.article
+                variants={item}
+                className="rounded-xl border border-white/20 overflow-hidden hover:shadow-lg transition-shadow backdrop-blur-sm bg-white/10"
+              >
+                <img
+                  src={article.image}
+                  alt={article.title}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-6">
+                  <div className="flex items-center gap-4 text-sm text-white/60 mb-4">
+                    <span className="flex items-center gap-1">
+                      <FiCalendar className="inline" />
+                      {article.date}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <FiClock className="inline" />
+                      {article.readTime}
+                    </span>
+                  </div>
+                  <h2 className="text-xl font-semibold mb-3">{article.title}</h2>
+                  <p className="text-white/80 mb-4">{article.excerpt}</p>
+                  <div className="flex items-center gap-2">
+                    <FiUser className="text-white/60" />
+                    <span className="text-sm text-white/80">{article.author}</span>
+                  </div>
                 </div>
-                <h2 className="text-xl font-semibold mb-3">{article.title}</h2>
-                <p className="text-white/80 mb-4">{article.excerpt}</p>
-                <div className="flex items-center gap-2">
-                  <FiUser className="text-white/60" />
-                  <span className="text-sm text-white/80">{article.author}</span>
-                </div>
-              </div>
-            </motion.article>
+              </motion.article>
+            </Link>
           ))}
       </motion.div>
     </div>

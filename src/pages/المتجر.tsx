@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiFilter, FiSearch } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import laptop from '../assets/Desktop - 2.png';
+import { configureStore } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
 interface Product {
   id: number;
@@ -9,6 +14,35 @@ interface Product {
   category: string;
   image: string;
 }
+
+// Redux store configuration
+const persistConfig = {
+  key: 'root',
+  storage,
+};
+
+const initialState = {
+  // Add your initial state here
+};
+
+const rootReducer = (state = initialState, action: any) => {
+  switch (action.type) {
+    default:
+      return state;
+  }
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+});
+
+export const persistor = persistStore(store);
 
 const Store: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -21,18 +55,18 @@ const Store: React.FC = () => {
 
   // Price filters
   const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(1000);
+  const [maxPrice, setMaxPrice] = useState<number>(2000);
   const [selectedMinPrice, setSelectedMinPrice] = useState<number>(0);
-  const [selectedMaxPrice, setSelectedMaxPrice] = useState<number>(1000);
+  const [selectedMaxPrice, setSelectedMaxPrice] = useState<number>(2000);
 
-  // Dummy data - Replace with your actual data source
+  // Dummy data with actual images
   useEffect(() => {
     const initialProducts: Product[] = [
-      { id: 1, name: 'Smartphone', price: 799, category: 'electronics', image: '/product1.jpg' },
-      { id: 2, name: 'Headphones', price: 149, category: 'electronics', image: '/product2.jpg' },
-      { id: 3, name: 'T-Shirt', price: 29, category: 'clothing', image: '/product3.jpg' },
-      { id: 4, name: 'Sneakers', price: 120, category: 'clothing', image: '/product4.jpg' },
-      { id: 5, name: 'Smartwatch', price: 199, category: 'electronics', image: '/product5.jpg' },
+      { id: 1, name: 'Gaming Laptop XPS 15', price: 1299.99, category: 'laptops', image: laptop },
+      { id: 2, name: 'Gaming Laptop XPS 13', price: 999.99, category: 'laptops', image: laptop },
+      { id: 3, name: 'Gaming Laptop XPS 17', price: 1599.99, category: 'laptops', image: laptop },
+      { id: 4, name: 'Gaming Desktop Pro', price: 1899.99, category: 'desktops', image: laptop },
+      { id: 5, name: 'Gaming Desktop Elite', price: 2199.99, category: 'desktops', image: laptop },
     ];
 
     setProducts(initialProducts);
@@ -177,24 +211,25 @@ const Store: React.FC = () => {
           layout
         >
           {filteredProducts.map((product) => (
-            <motion.div
-              key={product.id}
-              layout
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="rounded-xl border border-white/20 overflow-hidden hover:shadow-lg transition-shadow backdrop-blur-sm bg-white/10"
-            >
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-                <p className="text-blue-400 font-bold">${product.price}</p>
-              </div>
-            </motion.div>
+            <Link to={`/product/${product.id}`} key={product.id}>
+              <motion.div
+                layout
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="rounded-xl border border-white/20 overflow-hidden hover:shadow-lg transition-shadow backdrop-blur-sm bg-white/10"
+              >
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
+                  <p className="text-blue-400 font-bold">${product.price.toFixed(2)}</p>
+                </div>
+              </motion.div>
+            </Link>
           ))}
         </motion.div>
       )}
@@ -202,4 +237,4 @@ const Store: React.FC = () => {
   );
 };
 
-export default Store;
+export default Store; 

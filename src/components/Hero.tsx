@@ -72,16 +72,16 @@ const Hero = () => {
 
   return (
     <>
-      <section>
+      <section className="flex flex-col w-full">
         <div>
-        <Slideshow slides={slides}/>
-        </div>   <div className=' min-h-scree0n flex justify-center items-center'>
-                       <Main col={col} hcol={hcol}/>
-
+          <Slideshow slides={slides}/>
         </div>
-<div className='bg-[#0F0F0F]'>
-  <CardSlider cards={cards}/>
-</div>
+        <div className='w-full'>
+          <Main col={col} hcol={hcol}/>
+        </div>
+        <div className='bg-[#0F0F0F] w-full'>
+          <CardSlider cards={cards}/>
+        </div>
       </section>
     </>
   )

@@ -13,11 +13,16 @@ import {
   User,
   UserPlus,
   Users,
+  ShoppingCart,
+  Menu,
+  X
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Link } from "react-router-dom"
-import { useSelector } from "react-redux"
-import { Button } from "@/components/ui/button"
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../redux/store';
+import { logout } from '../redux/user/authSlice';
+import { auth } from '../firebase/firebase';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +37,11 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { useCart } from "@/context/CartContext"
+import CartDropdown from "./CartDropdown"
+import { Button } from "@/components/ui/button"
 
 interface Dropdown {
   name: string;
@@ -52,155 +62,162 @@ interface Navbarprops {
 }
 
 const Navbar: React.FC<Navbarprops> = ({ links, logoUrl }) => {
-  const { currentUser } = useSelector((state: any) => state.user);
+  const dispatch = useDispatch();
+  const { currentUser } = useSelector((state: RootState) => state.auth);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const { totalItems } = useCart();
 
+  const handleLogout = async () => {
+    await auth.signOut();
+    dispatch(logout());
+  };
 
   return (
-    <nav className=" relative bottom-7 max-w-full z-50"> {/* Added z-50 for high z-index */}
+    <nav className="relative bottom-7 max-w-full z-50">
+      <div className="bg-[#161616] fixed mt-6 flex justify-between items-center w-full px-4 md:px-16 py-5 z-50">
+        <div className="flex items-center gap-4">
+          <button 
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-white md:hidden"
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+          <Link to="/">
+            <img
+              src={logoUrl}
+              alt="vision.sa"
+              className="w-32 h-8"
+            />
+          </Link>
+        </div>
 
-      <div className="bg-[#161616] fixed mt-6 flex justify-between items-center w-full px-16 py-5 max-lg:w-max z-50">
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-8">
+          <div className="links font-normal text-white relative flex gap-16 z-50">
+            {links.map((link) => (
+              <div key={link.name} className="relative group duration-300">
+                <Link
+                  to={link.url}
+                  className={`hover:text-gray-400 ${link.className}`}
+                >
+                  {link.name}
+                </Link>
+                {link.dropdown && (
+                  <div className="duration-75 absolute hidden group-hover:block mt-2 py-2 w-48 bg-white rounded-md shadow-lg">
+                    {link.dropdown.map((dropdownlink) => (
+                      <Link
+                        key={dropdownlink.name}
+                        to={dropdownlink.url}
+                        className="block px-4 py-5 text-gray-800 hover:bg-gray-200"
+                      >
+                        {dropdownlink.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
 
-        <div className="links w-39 h-19 font-normal gap-16 text-white relative flex z-50">
+        <div className="flex items-center gap-4">
+          {/* Cart Button */}
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-white"
+              onClick={() => setIsCartOpen(!isCartOpen)}
+            >
+              <ShoppingCart className="h-6 w-6" />
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </Button>
+
+            <CartDropdown isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+          </div>
+
           {currentUser ? (
-            <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button>
-                <Avatar>
-                  <AvatarImage src={currentUser.PhotoUrl}/>
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                  <Link to={"/dashboard?tab=profile"}>
-                  <span>Profile</span>
-                  </Link>
-                  <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                <CreditCard className="mr-2 h-4 w-4" />
-
-                  <Link to={"/billing"}>   
-                  <span>Billing</span>
-                  </Link>
-          
-                  <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
-                  <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Keyboard className="mr-2 h-4 w-4" />
-                  <span>Keyboard shortcuts</span>
-                  <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <Users className="mr-2 h-4 w-4" />
-                  <span>Team</span>
-                </DropdownMenuItem>
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    <span>Invite users</span>
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuPortal>
-                    <DropdownMenuSubContent>
-                      <DropdownMenuItem>
-                        <Mail className="mr-2 h-4 w-4" />
-                        <span>Email</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <MessageSquare className="mr-2 h-4 w-4" />
-                        <span>Message</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        <PlusCircle className="mr-2 h-4 w-4" />
-                        <span>More...</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuSubContent>
-                  </DropdownMenuPortal>
-                </DropdownMenuSub>
-                <DropdownMenuItem>
-                  <Plus className="mr-2 h-4 w-4" />
-                  <span>New Team</span>
-                  <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Github className="mr-2 h-4 w-4" />
-                <span>GitHub</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <LifeBuoy className="mr-2 h-4 w-4" />
-                <span>Support</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem disabled>
-                <Cloud className="mr-2 h-4 w-4" />
-                <span>API</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
-                <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          ):(
-            <div className="hidden">
-
+            <div className="flex items-center space-x-4">
+              <span className="text-white">{currentUser.email}</span>
+              <button
+                onClick={handleLogout}
+                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="space-x-4">
+              <Link
+                to="/signin"
+                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/signup"
+                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Sign Up
+              </Link>
             </div>
           )}
-   
-          {links.map((link) => (
-            <div key={link.name} className="relative group duration-300">
-              <a
-                href={link.url}
-                className={`hover:text-gray-400 ${link.className} `}
-              >
-                {link.name}
-              </a>
-              {link.dropdown && (
-                <div className="duration-75 absolute hidden group-hover:block mt-2 py-2 w-48 bg-white rounded-md shadow-lg">
-                  {link.dropdown.map((dropdownlink) => (
-                    <a
-                      key={dropdownlink.name}
-                      href={dropdownlink.url}
-                      className="block px-4 py-5 text-gray-800 hover:bg-gray-200"
-                    >
-                      {dropdownlink.name}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-        <div>
-          <img
-            src={logoUrl}
-            alt="vision.sa"
-            className="w-32 h-8 flex-auto"
-          />
         </div>
       </div>
 
+      {/* Mobile Navigation */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: -300 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -300 }}
+            className="fixed inset-y-0 left-0 w-3/4 bg-[#161616] shadow-lg z-40 md:hidden"
+          >
+            <div className="flex flex-col p-4 mt-20">
+              {links.map((link) => (
+                <div key={link.name} className="py-2">
+                  <Link
+                    to={link.url}
+                    className="text-white hover:text-gray-400"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
+                  {link.dropdown && (
+                    <div className="pl-4 mt-2 space-y-2">
+                      {link.dropdown.map((dropdownlink) => (
+                        <Link
+                          key={dropdownlink.name}
+                          to={dropdownlink.url}
+                          className="block text-gray-300 hover:text-white"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {dropdownlink.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+              {!currentUser && (
+                <Link to="/signin" onClick={() => setIsOpen(false)}>
+                  <Button variant="ghost" className="text-white mt-4 w-full">
+                    Sign In
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };
 
-export default Navbar;
+export default Navbar; 

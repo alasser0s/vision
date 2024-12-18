@@ -1,52 +1,39 @@
-import React from 'react';
+import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 import frame78 from '../assets/visionlogo.png';
 import Footer from './Footer';
-interface LayoutsProps {
-  children: React.ReactNode;
-}
 
-const Layouts: React.FC<LayoutsProps> = ({ children }) => {
+const Layouts = () => {
   const links = [
     {
-      name: 'الرئيسية',
-      url: '/',
-      className: ''
+      name: "الرئيسية",
+      url: "/",
+      className: ""
     },
     {
-      name: 'من نحن',
-      url: '/من-نحن',
-      className: ''
+      name: "من نحن",
+      url: "/من-نحن",
+      className: ""
     },
     {
-      name: 'السوق',
-      url: '/المتجر',
-      className: ''
+      name: "السوق",
+      url: "/المتجر",
+      className: ""
     },
     {
-      name: 'الاجهزه',
-      url: '/العناصر',
-      className: '',
-      dropdown: [
-        {
-          name: 'Web Development',
-          url: '/services/web-development',
-          className: ''
-        },
-        {
-          name: 'SEO Optimization',
-          url: '/services/seo-optimization',
-          className: ''
-        }
-      ]
+      name: "الاخبار",
+      url: "/العناصر",
+      className: ""
     }
   ];
 
   return (
-    <div className="bg-[#161616] min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <Navbar links={links} logoUrl={frame78} />
-      <main className=" flex-grow">{children}</main>
-      <Footer /> {/* Ensure Footer is included */}
+      <main className="flex-grow">
+        <Outlet />
+      </main>
+      <Footer />
     </div>
   );
 };
